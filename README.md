@@ -14,13 +14,13 @@
 
 ## Авторы. Команда № 4.
 
-- Рияз Каримуллин|[Don1ns](https://github.com/Don1ns)
+- Рияз Каримуллин | [Don1ns](https://github.com/Don1ns)
 
-- Артем Королёв[Jappananny](https://github.com/Jappananny)
+- Артем Королёв | [Jappananny](https://github.com/Jappananny)
 
-- Алексей Серебряков[Serebryakov-A-E](https://github.com/Serebryakov-A-E)
+- Алексей Серебряков | [Serebryakov-A-E](https://github.com/Serebryakov-A-E)
 
-- Максим Герасименко[Maximilyan91](https://github.com/Maximilyan91)
+- Максим Герасименко | [Maximilyan91](https://github.com/Maximilyan91)
 
 
 ## Старт проекта: 
