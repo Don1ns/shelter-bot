@@ -30,9 +30,9 @@
 
 ## Стек технологий
 
-* Backend:
+Backend:
   - Java 17
   - Spring Boot
-* SQL:
+SQL:
   -
 
