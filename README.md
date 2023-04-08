@@ -14,13 +14,13 @@
 
 ## Авторы. Команда № 4.
 
-- [Рияз Каримуллин](https://github.com/Don1ns)
+- Рияз Каримуллин|[Don1ns](https://github.com/Don1ns)
 
-- [Артем Королёв](https://github.com/Jappananny)
+- Артем Королёв[Jappananny](https://github.com/Jappananny)
 
-- [Алексей Серебряков](https://github.com/Serebryakov-A-E)
+- Алексей Серебряков[Serebryakov-A-E](https://github.com/Serebryakov-A-E)
 
-- [Максим Герасименко](https://github.com/Maximilyan91)
+- Максим Герасименко[Maximilyan91](https://github.com/Maximilyan91)
 
 
 ## Старт проекта: 
@@ -30,9 +30,9 @@
 
 ## Стек технологий
 
-*Backend:
+* Backend:
   - Java 17
   - Spring Boot
-*SQL:
+* SQL:
   -
 
