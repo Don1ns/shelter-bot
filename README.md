@@ -22,6 +22,8 @@
 
 - Максим Герасименко | [Maximilyan91](https://github.com/Maximilyan91)
 
+- Елена Никитина | [elenanikitina22](https://github.com/elenanikitina22)
+
 
 ## Старт проекта: 
 
