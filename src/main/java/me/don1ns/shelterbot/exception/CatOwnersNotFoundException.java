@@ -1,4 +1,4 @@
-package me.don1ns.shelterbot.Exeption;
+package me.don1ns.shelterbot.exception;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 /*

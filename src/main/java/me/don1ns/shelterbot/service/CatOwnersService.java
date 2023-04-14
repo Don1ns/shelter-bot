@@ -1,5 +1,5 @@
 package me.don1ns.shelterbot.service;
-import me.don1ns.shelterbot.Exeption.CatOwnersNotFoundException;
+import me.don1ns.shelterbot.exception.CatOwnersNotFoundException;
 import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.repository.CatOwnersRepository;
 import org.springframework.stereotype.Service;
