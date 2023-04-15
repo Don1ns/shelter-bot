@@ -1,6 +1,7 @@
 package me.don1ns.shelterbot.keyboard;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
@@ -21,9 +22,9 @@ public class KeyBoard {
     private TelegramBot telegramBot;
 
     /**
-    * Метод отображает меню, где выбирается приют.
-    * @param chatId
-    */
+     * Метод отображает меню, где выбирается приют.
+     * @param chatId
+     */
     public void chooseMenu(long chatId) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
                 "Кошачий", "Собачий");
@@ -31,39 +32,43 @@ public class KeyBoard {
     }
 
     /**
-    * Метод отображает главное меню приюта.
-    * @param chatId
-    */
+     * Метод отображает главное меню приюта.
+     * @param chatId
+     */
     public void shelterMainMenu(long chatId) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
                 new String[]{"Узнать информацию о приюте", "Как взять животного из приюта"},
-                new String[]{"Прислать отчет о питомце", "Позвать волонтера"});
+                new String[]{"Прислать отчет о питомце", "Связаться с волонтером"});
         sendResponseMenu(chatId, replyKeyboardMarkup, "Ниже представлено главное меню приюта.");
     }
 
     /**
-    * Метод отображает меню, с информацией о приюте.
-    * @param chatId
-    */
+     * Метод отображает меню, с информацией о приюте.
+     * @param chatId
+     */
     public void shelterInfoMenu(long chatId) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
-                new String[]{"Информация о приюте", "Рекомендации о технике безопасности на территории приюта"},
-                new String[]{"Позвать волонтера", "Отправить контактные данные"},
-                new String[]{"Главное меню"});
+                "Информация о приюте",
+                "Рекомендации о технике безопасности на территории приюта");
+        replyKeyboardMarkup.addRow(new KeyboardButton("Связаться с волонтером"),
+                new KeyboardButton("Отправить контактные данные").requestContact(true));
+        replyKeyboardMarkup.addRow("Главное меню");
         sendResponseMenu(chatId, replyKeyboardMarkup, "Вы можете получить информацию о приюте в меню.");
     }
 
     /**
-    * Метод отображает меню, с информацией о том, как взять питомца из приюта.
-    * @param chatId
-    */
+     * Метод отображает меню, с информацией о том, как взять питомца из приюта.
+     * @param chatId
+     */
     public void shelterInfoHowAdoptPetMenu(long chatId) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
-                new String[]{"Список рекомендаций", "Список необходимых документов"},
-                new String[]{"Позвать волонтера", "Отправить контактные данные"},
-                new String[]{"Главное меню"});
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup("Список рекомендаций",
+                "Список необходимых документов");
+        replyKeyboardMarkup.addRow(new KeyboardButton("Связаться с волонтером"),
+                new KeyboardButton("Отправить контактные данные").requestContact(true));
+        replyKeyboardMarkup.addRow("Главное меню");
         sendResponseMenu(chatId, replyKeyboardMarkup, "Информация о том, как взять животное из приюта");
     }
+
     /**
      * Метод принимает клавиатуру и текст, и отправляет ответ в чат по chatId.
      * @param chatId
