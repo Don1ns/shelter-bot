@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+//TODO: сделать обработку с получением контактных данных
 /**
  * Класс обработки сообщений
  *
@@ -30,6 +31,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
     @Autowired
     private KeyBoard keyBoard;
     private boolean isCatShelter = false;
+    private boolean isFirstAppeal = true;
     private static final long CHAT_ID_VOLUNTEER = 486713115L;
 
     public TelegramBotUpdateListener(TelegramBot telegramBot) {
@@ -58,8 +60,10 @@ public class TelegramBotUpdateListener implements UpdatesListener {
 
                 switch (text) {
                     case "/start" -> {
-                        //TODO: сделать проверку на повторное обращение
-                        sendResponseMessage(chatId, "Привет! Я могу показать информацию о приютах, как взять животное из приюта и принять отчет о питомце");
+                        if(isFirstAppeal) {
+                            sendResponseMessage(chatId, "Привет! Я могу показать информацию о приютах, как взять животное из приюта и принять отчет о питомце");
+                            isFirstAppeal = false;
+                        }
                         keyBoard.chooseMenu(chatId);
                     }
                     case "Кошачий" -> {
@@ -95,7 +99,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                                     """);
                         }
                     }
-                    case "Рекомендации о технике безопасности на территории приюта" -> {
+                    case "Техника безопасности на территории приюта" -> {
                         if (isCatShelter) {
                             sendResponseMessage(chatId, "Рекомендации о технике безопасности на территории кошачего приюта - ...");
                         } else {

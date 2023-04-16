@@ -49,7 +49,7 @@ public class KeyBoard {
     public void shelterInfoMenu(long chatId) {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
                 "Информация о приюте",
-                "Рекомендации о технике безопасности на территории приюта");
+                "Техника безопасности на территории приюта");
         replyKeyboardMarkup.addRow(new KeyboardButton("Связаться с волонтером"),
                 new KeyboardButton("Отправить контактные данные").requestContact(true));
         replyKeyboardMarkup.addRow("Главное меню");
@@ -61,7 +61,7 @@ public class KeyBoard {
      * @param chatId
      */
     public void shelterInfoHowAdoptPetMenu(long chatId) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup("Список рекомендаций",
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup("Список рекомендаций и советов",
                 "Список необходимых документов");
         replyKeyboardMarkup.addRow(new KeyboardButton("Связаться с волонтером"),
                 new KeyboardButton("Отправить контактные данные").requestContact(true));
