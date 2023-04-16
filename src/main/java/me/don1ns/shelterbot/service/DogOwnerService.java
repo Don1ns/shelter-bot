@@ -24,8 +24,6 @@ public class DogOwnerService {
         //todo Трабл с optional
         return repository.findById(id);
     }
-
-    //метод удаления
     public void delete(DogOwner dogOwner) {
         repository.delete(dogOwner);
     }
