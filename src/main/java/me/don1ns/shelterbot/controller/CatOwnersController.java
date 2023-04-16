@@ -1,4 +1,4 @@
-package me.don1ns.shelterbot.controllers;
+package me.don1ns.shelterbot.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.service.CatOwnersService;
