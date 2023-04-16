@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @Service
 public class CatService {
-    private final Map<Long, Cat> cats = new HashMap<Long, Cat>();
+    private final Map<Long, Cat> cats = new HashMap<>();
     private Long id;
 
     /*
@@ -50,7 +50,7 @@ public class CatService {
      * Удаление кота из списка по ID
      */
 
-    public Cat deleteCat(Long id) {
+    public Cat removeCat(Long id) {
         if (cats.containsKey(id)) {
             return cats.remove(id);
         }
