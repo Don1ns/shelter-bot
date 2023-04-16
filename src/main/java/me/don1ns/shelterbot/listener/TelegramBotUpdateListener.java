@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Класс обработки сообщений
+ *
  * @author Riyaz Karimullin
  */
 @Component
@@ -42,6 +43,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
 
     /**
      * Метод, позволяющий отслеживать и организовывать весь процесс общения с пользователем.
+     *
      * @param updates
      */
     @Override
@@ -124,6 +126,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                                     """);
                         }
                     }
+                    default -> sendResponseMessage(chatId, "Неизвестная команда!");
                     case "Список необходимых документов" -> {
                         if (isCatShelter) {
                             sendResponseMessage(chatId, "Для взятия кота из приюта необходимы такие документы: ...");
@@ -141,6 +144,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
 
     /**
      * Метод отправки текстовых сообщений.
+     *
      * @param chatId
      * @param text
      */
@@ -154,6 +158,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
 
     /**
      * Метод пересылки сообщения волонтеру
+     *
      * @param chatId
      * @param messageId
      */
