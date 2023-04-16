@@ -1,8 +1,10 @@
 package me.don1ns.shelterbot.service;
 
-import me.don1ns.shelterbot.entity.DogOwner;
+import me.don1ns.shelterbot.model.DogOwner;
 import me.don1ns.shelterbot.repository.DogOwnerRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class DogOwnerService {
@@ -18,8 +20,9 @@ public class DogOwnerService {
     }
 
     //метод получения хозяина по его id
-    public void getById(Long id) {
-        repository.findById(id);
+    public Optional<DogOwner> getById(Long id) {
+        //todo Трабл с optional
+        return repository.findById(id);
     }
 
     //метод удаления

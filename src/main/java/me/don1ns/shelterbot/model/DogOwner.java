@@ -1,4 +1,4 @@
-package me.don1ns.shelterbot.entity;
+package me.don1ns.shelterbot.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
