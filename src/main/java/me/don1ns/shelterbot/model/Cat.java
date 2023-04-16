@@ -19,13 +19,13 @@ public class Cat {
     @Id
     @GeneratedValue
     private Long id;
-    //Имя кота
+    // Имя кота
     private String name;
-    //Порода кота
+    // Порода кота
     private String breed;
     // Год рождения кота
     private int yearOfBirth;
-    //описание кота
+    // Описание кота
     private String description;
 
 
