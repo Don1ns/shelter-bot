@@ -17,10 +17,12 @@ public class DogOwnerService {
         repository.save(dogOwner);
     }
 
+    //метод получения хозяина по его id
     public void getById(Long id) {
         repository.findById(id);
     }
 
+    //метод удаления
     public void delete(DogOwner dogOwner) {
         repository.delete(dogOwner);
     }

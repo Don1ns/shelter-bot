@@ -27,7 +27,9 @@ public class DogOwner {
     @Column(name = "dog_id")
     private Long dogId;
 
+    //связь OneToOne с собакой
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dog_id", referencedColumnName = "id")
     private Dog dog;
 
     @Override
