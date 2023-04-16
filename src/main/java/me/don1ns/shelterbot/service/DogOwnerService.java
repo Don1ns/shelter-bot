@@ -1,5 +1,6 @@
 package me.don1ns.shelterbot.service;
 
+import me.don1ns.shelterbot.exception.DogOwnerNotFoundException;
 import me.don1ns.shelterbot.model.DogOwner;
 import me.don1ns.shelterbot.repository.DogOwnerRepository;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,10 @@ public class DogOwnerService {
     }
 
     //метод получения хозяина по его id
-    public Optional<DogOwner> getById(Long id) {
-        //todo Трабл с optional
-        return repository.findById(id);
+    public DogOwner getById(Long id) {
+        return repository.findById(id).orElseThrow(DogOwnerNotFoundException::new);
     }
-    public void delete(DogOwner dogOwner) {
-        repository.delete(dogOwner);
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }

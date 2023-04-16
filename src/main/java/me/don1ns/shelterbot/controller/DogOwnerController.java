@@ -1,9 +1,14 @@
 package me.don1ns.shelterbot.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import me.don1ns.shelterbot.model.DogOwner;
 import me.don1ns.shelterbot.service.DogOwnerService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+/*
+Класс Контролер для владельцев собак
+ */
 @RestController
 @RequestMapping("/DogOwner")
 public class DogOwnerController {
@@ -14,5 +19,26 @@ public class DogOwnerController {
         this.dogOwnerService = dogOwnerService;
     }
 
-
+    @Operation(summary = "Получение пользователя по id")
+    @GetMapping("/{id}")
+    public DogOwner getById(@PathVariable Long id) {
+        return dogOwnerService.getById(id);
+    }
+    @Operation(summary = "Создание пользователя")
+    @PostMapping()
+    public ResponseEntity<Void> save(@RequestBody DogOwner dogOwner) {
+        dogOwnerService.save(dogOwner);
+        return ResponseEntity.ok().build();
+    }
+    @Operation(summary = "Изменение данных пользователя")
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody DogOwner dogOwner) {
+        dogOwnerService.save(dogOwner);
+        return ResponseEntity.ok().build();
+    }
+    @Operation(summary = "Удаление пользователей по id")
+    @DeleteMapping("/{id}")
+    public void remove(@PathVariable Long id) {
+        dogOwnerService.delete(id);
+    }
 }
