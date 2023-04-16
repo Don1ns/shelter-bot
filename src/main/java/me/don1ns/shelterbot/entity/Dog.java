@@ -15,6 +15,7 @@ public class Dog {
     @Id
     private Long id;
 
+    //свзять с хозяином собаки
     @OneToOne(mappedBy = "dogs", cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
     private DogOwner dogOwner;
 }

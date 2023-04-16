@@ -17,6 +17,7 @@ public class DogOwnerService {
         repository.save(dogOwner);
     }
 
+    //метод позволяет получить DogOwner по id
     public void getById(Long id) {
         repository.findById(id);
     }

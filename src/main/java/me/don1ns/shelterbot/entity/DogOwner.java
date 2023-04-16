@@ -13,6 +13,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "dog_owners")
 public class DogOwner {
+
+    //первичный ключ
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -27,6 +29,7 @@ public class DogOwner {
     @Column(name = "dog_id")
     private Long dogId;
 
+    //связь OneToOne хозяина с собакой
     @OneToOne(fetch = FetchType.LAZY)
     private Dog dog;
 
