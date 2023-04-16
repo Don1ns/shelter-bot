@@ -1,10 +1,9 @@
 package me.don1ns.shelterbot.service;
 
+import me.don1ns.shelterbot.exception.CatNotFoundException;
 import me.don1ns.shelterbot.model.Cat;
+import me.don1ns.shelterbot.repository.CatRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /*
  * CRUD операции для котов
@@ -12,49 +11,44 @@ import java.util.Map;
  */
 @Service
 public class CatService {
-    private final Map<Long, Cat> cats = new HashMap<>();
-    private Long id;
+    private final CatRepository repository;
 
-    /*
-    Добавление нового кота в список
-     */
-    public Cat AddCat(Cat cat) {
-        id++;
-        cats.put(id, cat);
-        return cat;
+    public CatService(CatRepository repository) {
+        this.repository = repository;
     }
-    /*
-     * Получение кота по ID
-     */
 
-    public Cat getCatByID(Long id) {
-        return cats.get(id);
+    /*
+     Добавление нового кота в список
+      */
+    public Cat addCat(Cat cat) {
+        return this.repository.save(cat);
+    }
+
+    /*
+    получение кота по ID
+    */
+    public Cat getById(Long id) {
+        return this.repository.findById(id).orElseThrow(CatNotFoundException::new);
     }
     /*
      * Обновление кота по ID
      */
 
-    public Cat editCat(Long id, Cat cat) {
-        if (cats.containsKey(id)) {
-            Cat item = cats.get(id);
-            item.setName(cat.getName());
-            item.setBreed(cat.getBreed());
-            item.setYearOfBirth(cat.getYearOfBirth());
-            item.setDescription(cat.getDescription());
-            return item;
-        }
+    public Cat update(Cat cat) {
 
-        return null;
+        if (cat.getId() != null) {
+            if (getById(cat.getId()) != null) {
+                return repository.save(cat);
+            }
+        }
+        throw new CatNotFoundException();
     }
     /*
      * Удаление кота из списка по ID
      */
 
-    public Cat removeCat(Long id) {
-        if (cats.containsKey(id)) {
-            return cats.remove(id);
-        }
-
+    public Cat removeById(Long id) {
+        this.repository.deleteById(id);
         return null;
     }
 }
