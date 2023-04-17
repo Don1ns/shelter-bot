@@ -1,49 +1,39 @@
 package me.don1ns.shelterbot.service;
+import me.don1ns.shelterbot.exception.DogNotFoundException;
 import me.don1ns.shelterbot.model.Dog;
+import me.don1ns.shelterbot.repository.DogRepository;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
-import java.util.Map;
 
+/*
+ * CRUD операции для собак
+ * @автор Елена Никитина
+ */
 @Service
 public class DogService {
-    private final Map<Integer, Dog> dogs = new HashMap<Integer, Dog>();
-    private int id;
+    private final DogRepository repository;
 
-    public Dog AddDog(Dog dog)
-    {
-        id++;
-        dogs.put(id, dog);
-        return dog;
+    public DogService(DogRepository repository) {
+        this.repository = repository;
     }
 
-    public Dog getDog(int id)
-    {
-        return dogs.get(id);
+    public Dog getById(Long id) {
+        return repository.findById(id).orElseThrow(DogNotFoundException::new);
     }
 
-    public Dog editDog(int id, Dog dog)
-    {
-        if (dogs.containsKey(id))
-        {
-            Dog item = dogs.get(id);
-            item.setName(dog.getName());
-            item.setBreed(dog.getBreed());
-            item.setYearOfBirth(dog.getYearOfBirth());
-            item.setDescription(dog.getDescription());
-            return item;
+    public Dog addDog(Dog dog) {
+        return repository.save(dog);
+    }
+
+    public Dog update(Dog dog) {
+        if (dog.getId() != null) {
+            if (getById(dog.getId()) != null) {
+                return repository.save(dog);
+            }
         }
-
-        return null;
+        throw new DogNotFoundException();
     }
 
-    public Dog deleteDog(int id)
-    {
-        if (dogs.containsKey(id))
-        {
-            Dog dog = dogs.remove(id);
-            return dog;
-        }
-
-        return null;
+    public void removeById(Long id) {
+        repository.deleteById(id);
     }
 }
