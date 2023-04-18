@@ -4,10 +4,10 @@ import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.service.CatOwnersService;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
-/*
-Класс Контролер для владельцев котиков
-@автор Королёв Артем
- */
+/**
+* Класс Контролер для владельцев котиков
+* @author Королёв Артем
+ **/
 @RestController
 @RequestMapping("owners-cat")
 public class CatOwnersController {

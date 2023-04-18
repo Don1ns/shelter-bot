@@ -2,10 +2,10 @@ package me.don1ns.shelterbot.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import javax.persistence.*;
-/*
-Класс Владельцев котиков
-@автор Королёв Артем
- */
+/**
+* Класс Владельцев котиков
+* @author Королёв Артем
+ **/
 @Data
 @Entity
 public class CatOwners {
@@ -26,6 +26,7 @@ public class CatOwners {
     //chatId номер чата пользователя с ботом
     private Long chatId;
     //status пользователя
+    @Enumerated(EnumType.STRING)
     private Status status;
     //Связь пользователя с класом Cat по cat_id
     @JsonBackReference

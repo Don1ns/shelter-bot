@@ -6,6 +6,7 @@ import java.util.Map;
 
 @Service
 public class DogService {
+    //Нужно переписать под репоситорий а не мапу, добавить ошибки в методы (класс ошибки я создал)
     private final Map<Integer, Dog> dogs = new HashMap<Integer, Dog>();
     private int id;
 

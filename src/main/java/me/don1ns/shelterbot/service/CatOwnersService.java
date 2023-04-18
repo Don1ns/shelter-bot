@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Collection;
-/*
-Класс Сервис для владельцев котиков
-@автор Королёв Артем
- */
+/**
+* Класс Сервис для владельцев котиков
+* @author Королёв Артем
+ **/
 @Service
 public class CatOwnersService {
     private final CatOwnersRepository repository;
@@ -26,13 +26,11 @@ public class CatOwnersService {
         logger.info("Was invoked method to create a catOwners");
         return this.repository.save(catOwners);
     }
-    public CatOwners update(CatOwners personCat) {
+    public CatOwners update(CatOwners catOwners) {
         logger.info("Was invoked method to update a catOwners");
-        if (personCat.getId() != null) {
-            if (getById(personCat.getId()) != null) {
-                return repository.save(personCat);
+        if (catOwners.getId() != null && getById(catOwners.getId()) != null) {
+                return repository.save(catOwners);
             }
-        }
         throw new CatOwnersNotFoundException();
     }
     public void removeById(Long id) {
