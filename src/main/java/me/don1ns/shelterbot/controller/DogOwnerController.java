@@ -23,6 +23,12 @@ public class DogOwnerController {
     public DogOwner getById(@PathVariable Long id) {
         return dogOwnerService.getById(id);
     }
+
+    @Operation(summary = "Получение пользователя по chat id")
+    @GetMapping("/{chatId}")
+    public DogOwner getByChatId(@PathVariable Long chatId) {
+        return dogOwnerService.getByChatId(chatId);
+    }
     @Operation(summary = "Создание пользователя")
     @PostMapping()
     public ResponseEntity<Void> save(@RequestBody DogOwner dogOwner) {
