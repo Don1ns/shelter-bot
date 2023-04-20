@@ -1,51 +1,24 @@
 package me.don1ns.shelterbot.model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import javax.persistence.*;
 
+/*
+Класс собаки
+@автор Елена Никитина
+*/
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Dog {
-    private int id;
+    @Id
+    @GeneratedValue
+    private Long id;
     private String name;
     private String breed;
     private int yearOfBirth;
     private String description;
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getBreed() {
-        return breed;
-    }
-
-    public int getYearOfBirth() {
-        return yearOfBirth;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setBreed(String breed) {
-        this.breed = breed;
-    }
-
-    public void setYearOfBirth(int yearOfBirth) {
-        this.yearOfBirth = yearOfBirth;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     @Override
     public String toString() {
@@ -57,16 +30,12 @@ public class Dog {
     public boolean equals(Object obj)
     {
         if (obj instanceof Dog == false || obj == null)
-        {
             return false;
-        }
 
         Dog dog = (Dog)obj;
 
         if (getId() == (dog.getId()) && getName().equals(dog.getName()))
-        {
             return true;
-        }
 
         return false;
     }
@@ -74,6 +43,6 @@ public class Dog {
     @Override
     public int hashCode()
     {
-        return id + name.hashCode();
+        return id.hashCode() + name.hashCode();
     }
 }
