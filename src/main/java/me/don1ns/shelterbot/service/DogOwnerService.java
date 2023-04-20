@@ -27,4 +27,8 @@ public class DogOwnerService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public DogOwner getByChatId(Long chatId) {
+        return repository.getDogOwnerByChatId(chatId);
+    }
 }
