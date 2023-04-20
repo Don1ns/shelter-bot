@@ -2,21 +2,29 @@ package me.don1ns.shelterbot.listener;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.Contact;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import me.don1ns.shelterbot.keyboard.KeyBoard;
+import me.don1ns.shelterbot.model.CatOwners;
+import me.don1ns.shelterbot.model.Context;
+import me.don1ns.shelterbot.model.DogOwner;
+import me.don1ns.shelterbot.constant.ButtonCommand;
+import me.don1ns.shelterbot.service.CatOwnersService;
+import me.don1ns.shelterbot.service.ContextService;
+import me.don1ns.shelterbot.service.DogOwnerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-//TODO: сделать обработку с получением контактных данных
+
 /**
  * Класс обработки сообщений
  *
@@ -26,21 +34,43 @@ import java.util.List;
 public class TelegramBotUpdateListener implements UpdatesListener {
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdateListener.class);
-    @Autowired
     private final TelegramBot telegramBot;
-    @Autowired
-    private KeyBoard keyBoard;
-    private boolean isCatShelter = false;
-    private boolean isFirstAppeal = true;
-    private static final long CHAT_ID_VOLUNTEER = 486713115L;
+    private final KeyBoard keyBoard;
+    private final ContextService contextService;
+    private final CatOwnersService catOwnersService;
+    private final DogOwnerService dogOwnerService;
+    @Value("${volunteer-chat-id}")
+    private Long volunteerChatId;
 
-    public TelegramBotUpdateListener(TelegramBot telegramBot) {
+    public TelegramBotUpdateListener(TelegramBot telegramBot, KeyBoard keyBoard,
+                                     ContextService contextService, CatOwnersService catOwnersService,
+                                     DogOwnerService dogOwnerService) {
         this.telegramBot = telegramBot;
+        this.keyBoard = keyBoard;
+        this.contextService = contextService;
+        this.catOwnersService = catOwnersService;
+        this.dogOwnerService = dogOwnerService;
     }
 
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
+    }
+
+    /**
+     * Метод предназначенный для switch-case,
+     * который принимает текст сообщения пользователя и сравнивает со значениями enum класса ButtonCommand
+     * @param buttonCommand
+     * @return
+     */
+    public static ButtonCommand parse(String buttonCommand) {
+        ButtonCommand[] values = ButtonCommand.values();
+        for (ButtonCommand command : values) {
+            if (command.getCommand().equals(buttonCommand)) {
+                return command;
+            }
+        }
+        return null;
     }
 
     /**
@@ -57,70 +87,98 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                 long chatId = message.chat().id();
                 String text = message.text();
                 int messageId = message.messageId();
+                Contact contact = update.message().contact();
 
-                switch (text) {
-                    case "/start" -> {
-                        if(isFirstAppeal) {
-                            sendResponseMessage(chatId, "Привет! Я могу показать информацию о приютах, как взять животное из приюта и принять отчет о питомце");
-                            isFirstAppeal = false;
+
+                switch (parse(text)) {
+                    case START -> {
+                        if(contextService.getByChatId(chatId).isEmpty()){
+                            sendResponseMessage(chatId, "Привет! Я могу показать информацию о приютах," +
+                                    "как взять животное из приюта и принять отчет о питомце");
+                            Context context = new Context();
+                            context.setChatId(chatId);
+                            contextService.saveContext(context);
                         }
                         keyBoard.chooseMenu(chatId);
                     }
-                    case "Кошачий" -> {
-                        isCatShelter = true;
+                    case CAT -> {
+                        Context context = contextService.getByChatId(chatId).get();
+                        if(catOwnersService.getByChatId(chatId).isEmpty()) {
+                            CatOwners catOwner = new CatOwners();
+                            catOwner.setChatId(chatId);
+                            catOwnersService.create(catOwner);
+                            context.setCatOwner(catOwner);
+                        }
+                        context.setShelterType(ButtonCommand.CAT.getCommand());
+                        contextService.saveContext(context);
                         sendResponseMessage(chatId, "Вы выбрали кошачий приют.");
                         keyBoard.shelterMainMenu(chatId);
                     }
-                    case "Собачий" -> {
-                        isCatShelter = false;
+                    case DOG -> {
+                        Context context = contextService.getByChatId(chatId).get();
+                        if(dogOwnerService.getByChatId(chatId).isEmpty()) {
+                            DogOwner dogOwner = new DogOwner();
+                            dogOwner.setChatId(chatId);
+                            dogOwnerService.save(dogOwner);
+                            context.setDogOwner(dogOwner);
+                        }
+                        context.setShelterType(ButtonCommand.DOG.getCommand());
+                        contextService.saveContext(context);
                         sendResponseMessage(chatId, "Вы выбрали собачий приют.");
                         keyBoard.shelterMainMenu(chatId);
                     }
-                    case "Главное меню" -> {
+                    case MAIN_MENU -> {
                         keyBoard.shelterMainMenu(chatId);
                     }
-                    case "Узнать информацию о приюте" -> {
+                    case SHELTER_INFO_MENU -> {
                         keyBoard.shelterInfoMenu(chatId);
                     }
-                    case "Информация о приюте" -> {
-                        if (isCatShelter) {
+                    case SHELTER_INFO -> {
+                        Context context = contextService.getByChatId(chatId).get();
+                        if(context.getShelterType().equals(ButtonCommand.CAT.getCommand())) {
                             sendResponseMessage(chatId, """
                                     Информация о кошачем приюте - ...
-                                    Расписание приюта - ...
-                                    Адрес и схема проезда - ...
+                                    Рекомендации о технике безопасности на территории кошачего приюта - ...
                                     Контактные данные охраны - ...
                                     """);
-                        } else {
+                        } else if(context.getShelterType().equals(ButtonCommand.DOG.getCommand())){
                             sendResponseMessage(chatId, """
                                     Информация о собачем приюте - ...
-                                    Расписание приюта - ...
-                                    Адрес и схема проезда - ...
+                                    Рекомендации о технике безопасности на территории собачего приюта - ...
                                     Контактные данные охраны - ...
                                     """);
                         }
                     }
-                    case "Техника безопасности на территории приюта" -> {
-                        if (isCatShelter) {
-                            sendResponseMessage(chatId, "Рекомендации о технике безопасности на территории кошачего приюта - ...");
-                        } else {
-                            sendResponseMessage(chatId, "Рекомендации о технике безопасности на территории собачего приюта - ...");
+                    case SHELTER_ADDRESS_SCHEDULE -> {
+                        Context context = contextService.getByChatId(chatId).get();
+                        if(context.getShelterType().equals(ButtonCommand.CAT.getCommand())) {
+                            sendResponseMessage(chatId, """
+                                    Адрес кошачего приюта - ...
+                                    График работы - ...
+                                    """);
+                        } else if(context.getShelterType().equals(ButtonCommand.DOG.getCommand())) {
+                            sendResponseMessage(chatId, """
+                                    Адрес кошачего приюта - ...
+                                    График работы - ...
+                                    """);
                         }
                     }
-                    case "Связаться с волонтером" -> {
+                    case VOLUNTEER -> {
                         sendResponseMessage(chatId, "Мы передали ваше сообщение волонтеру.");
                         sendForwardMessage(chatId, messageId);
                     }
-                    case "Как взять животного из приюта" -> {
+                    case HOW_ADOPT_PET_INFO -> {
                         keyBoard.shelterInfoHowAdoptPetMenu(chatId);
                     }
-                    case "Список рекомендаций и советов" -> {
-                        if (isCatShelter) {
+                    case RECOMMENDATIONS_LIST -> {
+                        Context context = contextService.getByChatId(chatId).get();
+                        if(context.getShelterType().equals(ButtonCommand.CAT.getCommand())) {
                             sendResponseMessage(chatId, """
                                     Правила знакомства с животным - ...
                                     Список рекомендаций - ...
                                     Список причин отказа в выдаче животного - ...
                                     """);
-                        } else {
+                        } else if(context.getShelterType().equals(ButtonCommand.DOG.getCommand())) {
                             sendResponseMessage(chatId, """
                                     Правила знакомства с животным - ...
                                     Список рекомендаций - ...
@@ -130,14 +188,36 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                                     """);
                         }
                     }
-                    default -> sendResponseMessage(chatId, "Неизвестная команда!");
-                    case "Список необходимых документов" -> {
-                        if (isCatShelter) {
-                            sendResponseMessage(chatId, "Для взятия кота из приюта необходимы такие документы: ...");
-                        } else {
-                            sendResponseMessage(chatId, "Для взятия собаки из приюта необходимы такие документы: ...");
+                    case DOCUMENTS_LIST -> {
+                        Context context = contextService.getByChatId(chatId).get();
+                        if(context.getShelterType().equals(ButtonCommand.CAT.getCommand())) {
+                            sendResponseMessage(chatId,
+                                    "Для взятия кота из приюта необходимы такие документы: ...");
+                        } else if(context.getShelterType().equals(ButtonCommand.DOG.getCommand())) {
+                            sendResponseMessage(chatId,
+                                    "Для взятия собаки из приюта необходимы такие документы: ...");
                         }
                     }
+                    case null -> {
+                        Context context = contextService.getByChatId(chatId).get();
+                        if(context.getShelterType().equals(
+                                ButtonCommand.CAT.getCommand()) && update.message() != null && contact != null) {
+                            CatOwners catOwner = context.getCatOwner();
+                            catOwner.setPhone(contact.phoneNumber());
+                            catOwner.setName(contact.firstName());
+                            catOwnersService.update(catOwner);
+                        } else if(context.getShelterType().equals(
+                                ButtonCommand.DOG.getCommand()) && update.message() != null && contact != null) {
+                            DogOwner dogOwner = context.getDogOwner();
+                            dogOwner.setPhone(contact.phoneNumber());
+                            dogOwner.setName(contact.firstName());
+                            dogOwnerService.save(dogOwner);
+                        }
+                        sendForwardMessage(chatId, messageId);
+                        sendResponseMessage(chatId, "Мы получили ваши контактные данные");
+
+                    }
+                    default -> sendResponseMessage(chatId, "Неизвестная команда!");
                 }
             });
         } catch (Exception e) {
@@ -167,7 +247,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
      * @param messageId
      */
     public void sendForwardMessage(long chatId, int messageId) {
-        ForwardMessage forwardMessage = new ForwardMessage(CHAT_ID_VOLUNTEER, chatId, messageId);
+        ForwardMessage forwardMessage = new ForwardMessage(volunteerChatId, chatId, messageId);
         SendResponse sendResponse = telegramBot.execute(forwardMessage);
         if (!sendResponse.isOk()) {
             logger.error("Error during sending message: {}", sendResponse.description());
