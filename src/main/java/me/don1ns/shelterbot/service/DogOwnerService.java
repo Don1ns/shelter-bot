@@ -5,7 +5,9 @@ import me.don1ns.shelterbot.model.DogOwner;
 import me.don1ns.shelterbot.repository.DogOwnerRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+/**
+ * Класс сервис для DogOwner
+ **/
 
 @Service
 public class DogOwnerService {
