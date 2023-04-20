@@ -15,7 +15,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-
+/**
+ * Класс тестов сервисов для котов
+ * @author Герасименко Максим
+ **/
 @ExtendWith(MockitoExtension.class)
 public class CatServiceTest {
 
