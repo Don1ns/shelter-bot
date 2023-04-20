@@ -40,7 +40,7 @@ public class CatController {
 
     @Operation(summary = "Удаление кота по id")
     @DeleteMapping("/{id}")
-    public Cat removeCat(@PathVariable Long id) {
-        return catService.removeById(id);
+    public void removeCat(@PathVariable Long id) {
+        catService.removeById(id);
     }
 }

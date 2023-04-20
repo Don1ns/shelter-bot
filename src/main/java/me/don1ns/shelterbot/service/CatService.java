@@ -35,20 +35,16 @@ public class CatService {
      */
 
     public Cat update(Cat cat) {
-
-        if (cat.getId() != null) {
-            if (getById(cat.getId()) != null) {
+        if (cat.getId() != null && getById(cat.getId()) != null) {
                 return repository.save(cat);
             }
-        }
         throw new CatNotFoundException();
     }
     /*
      * Удаление кота из списка по ID
      */
 
-    public Cat removeById(Long id) {
+    public void removeById(Long id) {
         this.repository.deleteById(id);
-        return null;
     }
 }
