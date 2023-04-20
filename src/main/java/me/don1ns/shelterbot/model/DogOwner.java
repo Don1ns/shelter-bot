@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Objects;
-
+/**
+ * Класс Владельцев собак
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,14 +20,25 @@ public class DogOwner {
     @Column(name = "id")
     private Long id;
 
+    //name пользователя
     @Column(name = "name")
     private String name;
+    //yearOfBirth год рождения пользователя
+    @Column(name = "yearOfBirth")
+    private int yearOfBirth;
+    //phone телефон пользователя
+    @Column(name = "phone")
+    private String phone;
+    //mail електроная почта пользователя
+    @Column(name = "email")
+    private String mail;
+    //address пользователя
+    @Column(name = "address")
+    private String address;
 
+    //chat id пользователя
     @Column(name = "chat_id")
-    private String chatId;
-
-    @Column(name = "dog_id")
-    private Long dogId;
+    private Long chatId;
 
     //связь OneToOne с собакой
     @OneToOne(fetch = FetchType.LAZY)
@@ -37,12 +50,12 @@ public class DogOwner {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DogOwner dogOwner = (DogOwner) o;
-        return Objects.equals(id, dogOwner.id) && Objects.equals(name, dogOwner.name) && Objects.equals(chatId, dogOwner.chatId) && Objects.equals(dogId, dogOwner.dogId);
+        return Objects.equals(id, dogOwner.id) && Objects.equals(name, dogOwner.name) && Objects.equals(chatId, dogOwner.chatId) && Objects.equals(dog, dogOwner.dog);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, chatId, dogId);
+        return Objects.hash(id, name, chatId, dog);
     }
 
     @Override
@@ -51,7 +64,7 @@ public class DogOwner {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", chatId='" + chatId + '\'' +
-                ", dogId=" + dogId +
+                ", dog=" + dog +
                 '}';
     }
 }
