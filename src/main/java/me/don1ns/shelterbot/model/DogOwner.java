@@ -45,6 +45,12 @@ public class DogOwner {
     @JoinColumn(name = "dog_id", referencedColumnName = "id")
     private Dog dog;
 
+    public DogOwner(Long id, String name, Long chatId) {
+        this.id = id;
+        this.name = name;
+        this.chatId = chatId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
