@@ -17,12 +17,11 @@ public class DogOwnerService {
         this.repository = repository;
     }
 
-    //метод работает на сохранение и обновление
-    public void save(DogOwner dogOwner) {
+    public DogOwner save(DogOwner dogOwner) {
         repository.save(dogOwner);
+        return dogOwner;
     }
 
-    //метод получения хозяина по его id
     public DogOwner getById(Long id) {
         return repository.findById(id).orElseThrow(DogOwnerNotFoundException::new);
     }
