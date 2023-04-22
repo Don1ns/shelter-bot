@@ -6,14 +6,13 @@ import me.don1ns.shelterbot.service.DogOwnerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/*
-Класс Контролер для владельцев собак
+/**
+* Класс Контролер для владельцев собак
  */
 @RestController
 @RequestMapping("/DogOwner")
 public class DogOwnerController {
     private final DogOwnerService dogOwnerService;
-
 
     public DogOwnerController(DogOwnerService dogOwnerService) {
         this.dogOwnerService = dogOwnerService;
@@ -23,6 +22,12 @@ public class DogOwnerController {
     @GetMapping("/{id}")
     public DogOwner getById(@PathVariable Long id) {
         return dogOwnerService.getById(id);
+    }
+
+    @Operation(summary = "Получение пользователя по chat id")
+    @GetMapping("/{chatId}")
+    public DogOwner getByChatId(@PathVariable Long chatId) {
+        return dogOwnerService.getByChatId(chatId);
     }
     @Operation(summary = "Создание пользователя")
     @PostMapping()
@@ -38,7 +43,8 @@ public class DogOwnerController {
     }
     @Operation(summary = "Удаление пользователей по id")
     @DeleteMapping("/{id}")
-    public void remove(@PathVariable Long id) {
+    public ResponseEntity<Void> remove(@PathVariable Long id) {
         dogOwnerService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }
