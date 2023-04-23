@@ -9,6 +9,7 @@ import javax.persistence.*;
 @автор Елена Никитина
 */
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 public class Dog {

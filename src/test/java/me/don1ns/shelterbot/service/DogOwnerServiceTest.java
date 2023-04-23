@@ -11,7 +11,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,9 +41,11 @@ class DogOwnerServiceTest {
     public void testGetByChatId() {
         Long testChatId = 5456L;
         DogOwner dogOwner = new DogOwner(1L, "Vasya", testChatId);
-        Mockito.when(repository.getDogOwnerByChatId(testChatId)).thenReturn(dogOwner);
-        DogOwner result = service.getByChatId(testChatId);
-        Assertions.assertEquals(dogOwner, result);
+        Set<DogOwner> dogOwnerSet = new HashSet<>();
+        dogOwnerSet.add(dogOwner);
+        Mockito.when(repository.getDogOwnerByChatId(testChatId)).thenReturn(dogOwnerSet);
+        Set<DogOwner> result = service.getByChatId(testChatId);
+        Assertions.assertEquals(dogOwnerSet, result);
     }
 
     @Test

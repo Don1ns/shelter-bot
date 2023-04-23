@@ -6,6 +6,8 @@ import me.don1ns.shelterbot.service.DogOwnerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 /**
 * Класс Контролер для владельцев собак
  */
@@ -26,7 +28,7 @@ public class DogOwnerController {
 
     @Operation(summary = "Получение пользователя по chat id")
     @GetMapping("/{chatId}")
-    public DogOwner getByChatId(@PathVariable Long chatId) {
+    public Set<DogOwner> getByChatId(@PathVariable Long chatId) {
         return dogOwnerService.getByChatId(chatId);
     }
     @Operation(summary = "Создание пользователя")

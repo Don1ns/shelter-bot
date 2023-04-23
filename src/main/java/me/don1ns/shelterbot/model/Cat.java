@@ -3,14 +3,16 @@ package me.don1ns.shelterbot.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 /*
 Класс котиков
 @автор Максим Герасименко
 */
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,4 +36,5 @@ public class Cat {
         return "Кличка кота - " + getName() + ", год рождения - " + getYearOfBirth() +
                 ", порода - " + getBreed() + ", дополнительная информация о коте - " + description;
     }
+
 }

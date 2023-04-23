@@ -5,6 +5,8 @@ import me.don1ns.shelterbot.model.DogOwner;
 import me.don1ns.shelterbot.repository.DogOwnerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 /**
  * Класс сервис для DogOwner
  **/
@@ -29,7 +31,7 @@ public class DogOwnerService {
         repository.deleteById(id);
     }
 
-    public DogOwner getByChatId(Long chatId) {
+    public Set<DogOwner> getByChatId(Long chatId) {
         return repository.getDogOwnerByChatId(chatId);
     }
 }
