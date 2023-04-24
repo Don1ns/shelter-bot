@@ -12,3 +12,4 @@ public class DogNotFoundException extends RuntimeException {
         super("Dog is not found.");
     }
 }
+
