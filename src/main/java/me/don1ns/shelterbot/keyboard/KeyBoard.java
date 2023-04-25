@@ -43,7 +43,8 @@ public class KeyBoard {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(
                 new String[]{ButtonCommand.SHELTER_INFO_MENU.getCommand(), ButtonCommand.HOW_ADOPT_PET_INFO.getCommand()},
                 new String[]{"Прислать отчет о питомце", ButtonCommand.VOLUNTEER.getCommand()});
-        sendResponseMenu(chatId, replyKeyboardMarkup, "Ниже представлено главное меню приюта.");
+        sendResponseMenu(chatId, replyKeyboardMarkup, "Ниже представлено главное меню приюта. " +
+                "Чтобы вернуться к выбору приюта, напишите команду /start");
     }
 
     /**

@@ -3,8 +3,10 @@ package me.don1ns.shelterbot.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import me.don1ns.shelterbot.constant.ShelterType;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
@@ -19,13 +21,14 @@ import javax.persistence.OneToOne;
 public class Context {
     @Id
     private Long chatId;
-    private String shelterType;
+    @Enumerated
+    private ShelterType shelterType;
     @OneToOne
-    CatOwners catOwner;
+    private CatOwners catOwner;
     @OneToOne
-    DogOwner dogOwner;
+    private DogOwner dogOwner;
 
-    public Context(Long chatId, String shelterType) {
+    public Context(Long chatId, ShelterType shelterType) {
         this.chatId = chatId;
         this.shelterType = shelterType;
     }

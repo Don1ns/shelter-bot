@@ -8,6 +8,7 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.ForwardMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
+import me.don1ns.shelterbot.constant.ShelterType;
 import me.don1ns.shelterbot.keyboard.KeyBoard;
 import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.model.Context;
@@ -60,6 +61,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
     /**
      * Метод предназначенный для switch-case,
      * который принимает текст сообщения пользователя и сравнивает со значениями enum класса ButtonCommand
+     *
      * @param buttonCommand
      * @return
      */
@@ -92,7 +94,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
 
                 switch (parse(text)) {
                     case START -> {
-                        if(contextService.getByChatId(chatId).isEmpty()){
+                        if (contextService.getByChatId(chatId).isEmpty()) {
                             sendResponseMessage(chatId, "Привет! Я могу показать информацию о приютах," +
                                     "как взять животное из приюта и принять отчет о питомце");
                             Context context = new Context();
@@ -102,30 +104,35 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                         keyBoard.chooseMenu(chatId);
                     }
                     case CAT -> {
-                        Context context = contextService.getByChatId(chatId).get();
-                        if(catOwnersService.getByChatId(chatId).isEmpty()) {
-                            CatOwners catOwner = new CatOwners();
-                            catOwner.setChatId(chatId);
-                            catOwnersService.create(catOwner);
-                            context.setCatOwner(catOwner);
+                        if (contextService.getByChatId(chatId).isPresent()) {
+                            Context context = contextService.getByChatId(chatId).get();
+                            if (catOwnersService.getByChatId(chatId).isEmpty()) {
+                                CatOwners catOwner = new CatOwners();
+                                catOwner.setChatId(chatId);
+                                catOwnersService.create(catOwner);
+                                context.setCatOwner(catOwner);
+                            }
+                            context.setShelterType(ShelterType.CAT);
+                            contextService.saveContext(context);
+                            sendResponseMessage(chatId, "Вы выбрали кошачий приют.");
+                            keyBoard.shelterMainMenu(chatId);
                         }
-                        context.setShelterType(ButtonCommand.CAT.getCommand());
-                        contextService.saveContext(context);
-                        sendResponseMessage(chatId, "Вы выбрали кошачий приют.");
-                        keyBoard.shelterMainMenu(chatId);
+
                     }
                     case DOG -> {
-                        Context context = contextService.getByChatId(chatId).get();
-                        if(dogOwnerService.getByChatId(chatId).isEmpty()) {
-                            DogOwner dogOwner = new DogOwner();
-                            dogOwner.setChatId(chatId);
-                            dogOwnerService.save(dogOwner);
-                            context.setDogOwner(dogOwner);
+                        if (contextService.getByChatId(chatId).isPresent()) {
+                            Context context = contextService.getByChatId(chatId).get();
+                            if (dogOwnerService.getByChatId(chatId).isEmpty()) {
+                                DogOwner dogOwner = new DogOwner();
+                                dogOwner.setChatId(chatId);
+                                dogOwnerService.save(dogOwner);
+                                context.setDogOwner(dogOwner);
+                            }
+                            context.setShelterType(ShelterType.DOG);
+                            contextService.saveContext(context);
+                            sendResponseMessage(chatId, "Вы выбрали собачий приют.");
+                            keyBoard.shelterMainMenu(chatId);
                         }
-                        context.setShelterType(ButtonCommand.DOG.getCommand());
-                        contextService.saveContext(context);
-                        sendResponseMessage(chatId, "Вы выбрали собачий приют.");
-                        keyBoard.shelterMainMenu(chatId);
                     }
                     case MAIN_MENU -> {
                         keyBoard.shelterMainMenu(chatId);
@@ -134,88 +141,100 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                         keyBoard.shelterInfoMenu(chatId);
                     }
                     case SHELTER_INFO -> {
-                        Context context = contextService.getByChatId(chatId).get();
-                        if(context.getShelterType().equals(ButtonCommand.CAT.getCommand())) {
-                            sendResponseMessage(chatId, """
-                                    Информация о кошачем приюте - ...
-                                    Рекомендации о технике безопасности на территории кошачего приюта - ...
-                                    Контактные данные охраны - ...
-                                    """);
-                        } else if(context.getShelterType().equals(ButtonCommand.DOG.getCommand())){
-                            sendResponseMessage(chatId, """
-                                    Информация о собачем приюте - ...
-                                    Рекомендации о технике безопасности на территории собачего приюта - ...
-                                    Контактные данные охраны - ...
-                                    """);
+                        if (contextService.getByChatId(chatId).isPresent()) {
+                            Context context = contextService.getByChatId(chatId).get();
+                            if (context.getShelterType().equals(ShelterType.CAT)) {
+                                sendResponseMessage(chatId, """
+                                        Информация о кошачем приюте - ...
+                                        Рекомендации о технике безопасности на территории кошачего приюта - ...
+                                        Контактные данные охраны - ...
+                                        """);
+                            } else if (context.getShelterType().equals(ShelterType.DOG)) {
+                                sendResponseMessage(chatId, """
+                                        Информация о собачем приюте - ...
+                                        Рекомендации о технике безопасности на территории собачего приюта - ...
+                                        Контактные данные охраны - ...
+                                        """);
+                            }
                         }
                     }
                     case SHELTER_ADDRESS_SCHEDULE -> {
-                        Context context = contextService.getByChatId(chatId).get();
-                        if(context.getShelterType().equals(ButtonCommand.CAT.getCommand())) {
-                            sendResponseMessage(chatId, """
-                                    Адрес кошачего приюта - ...
-                                    График работы - ...
-                                    """);
-                        } else if(context.getShelterType().equals(ButtonCommand.DOG.getCommand())) {
-                            sendResponseMessage(chatId, """
-                                    Адрес кошачего приюта - ...
-                                    График работы - ...
-                                    """);
+                        if (contextService.getByChatId(chatId).isPresent()) {
+                            Context context = contextService.getByChatId(chatId).get();
+                            if (context.getShelterType().equals(ShelterType.CAT)) {
+                                sendResponseMessage(chatId, """
+                                        Адрес кошачего приюта - ...
+                                        График работы - ...
+                                        """);
+                            } else if (context.getShelterType().equals(ShelterType.DOG)) {
+                                sendResponseMessage(chatId, """
+                                        Адрес кошачего приюта - ...
+                                        График работы - ...
+                                        """);
+                            }
                         }
                     }
                     case VOLUNTEER -> {
-                        sendResponseMessage(chatId, "Мы передали ваше сообщение волонтеру.");
+                        sendResponseMessage(chatId, "Мы передали ваше сообщение волонтеру. " +
+                                "Если у вас закрытый профиль отправьте контактные данные," +
+                                "с помощью кнопки в меню - Отправить контактные данные");
                         sendForwardMessage(chatId, messageId);
                     }
                     case HOW_ADOPT_PET_INFO -> {
                         keyBoard.shelterInfoHowAdoptPetMenu(chatId);
                     }
                     case RECOMMENDATIONS_LIST -> {
-                        Context context = contextService.getByChatId(chatId).get();
-                        if(context.getShelterType().equals(ButtonCommand.CAT.getCommand())) {
-                            sendResponseMessage(chatId, """
-                                    Правила знакомства с животным - ...
-                                    Список рекомендаций - ...
-                                    Список причин отказа в выдаче животного - ...
-                                    """);
-                        } else if(context.getShelterType().equals(ButtonCommand.DOG.getCommand())) {
-                            sendResponseMessage(chatId, """
-                                    Правила знакомства с животным - ...
-                                    Список рекомендаций - ...
-                                    Советы кинолога по первичному общению с собакой - ...
-                                    Рекомендации по проверенным кинологам для дальнейшего обращения к ним
-                                    Список причин отказа в выдаче животного - ...
-                                    """);
+                        if (contextService.getByChatId(chatId).isPresent()) {
+                            Context context = contextService.getByChatId(chatId).get();
+                            if (context.getShelterType().equals(ShelterType.CAT)) {
+                                sendResponseMessage(chatId, """
+                                        Правила знакомства с животным - ...
+                                        Список рекомендаций - ...
+                                        Список причин отказа в выдаче животного - ...
+                                        """);
+                            } else if (context.getShelterType().equals(ShelterType.DOG)) {
+                                sendResponseMessage(chatId, """
+                                        Правила знакомства с животным - ...
+                                        Список рекомендаций - ...
+                                        Советы кинолога по первичному общению с собакой - ...
+                                        Рекомендации по проверенным кинологам для дальнейшего обращения к ним
+                                        Список причин отказа в выдаче животного - ...
+                                        """);
+                            }
                         }
                     }
                     case DOCUMENTS_LIST -> {
-                        Context context = contextService.getByChatId(chatId).get();
-                        if(context.getShelterType().equals(ButtonCommand.CAT.getCommand())) {
-                            sendResponseMessage(chatId,
-                                    "Для взятия кота из приюта необходимы такие документы: ...");
-                        } else if(context.getShelterType().equals(ButtonCommand.DOG.getCommand())) {
-                            sendResponseMessage(chatId,
-                                    "Для взятия собаки из приюта необходимы такие документы: ...");
+                        if (contextService.getByChatId(chatId).isPresent()) {
+                            Context context = contextService.getByChatId(chatId).get();
+                            if (context.getShelterType().equals(ShelterType.CAT)) {
+                                sendResponseMessage(chatId,
+                                        "Для взятия кота из приюта необходимы такие документы: ...");
+                            } else if (context.getShelterType().equals(ShelterType.DOG)) {
+                                sendResponseMessage(chatId,
+                                        "Для взятия собаки из приюта необходимы такие документы: ...");
+                            }
                         }
                     }
                     case null -> {
-                        Context context = contextService.getByChatId(chatId).get();
-                        if(context.getShelterType().equals(
-                                ButtonCommand.CAT.getCommand()) && update.message() != null && contact != null) {
-                            CatOwners catOwner = context.getCatOwner();
-                            catOwner.setPhone(contact.phoneNumber());
-                            catOwner.setName(contact.firstName());
-                            catOwnersService.update(catOwner);
-                        } else if(context.getShelterType().equals(
-                                ButtonCommand.DOG.getCommand()) && update.message() != null && contact != null) {
-                            DogOwner dogOwner = context.getDogOwner();
-                            dogOwner.setPhone(contact.phoneNumber());
-                            dogOwner.setName(contact.firstName());
-                            dogOwnerService.save(dogOwner);
-                        }
-                        sendForwardMessage(chatId, messageId);
-                        sendResponseMessage(chatId, "Мы получили ваши контактные данные");
+                        if (contextService.getByChatId(chatId).isPresent()) {
+                            Context context = contextService.getByChatId(chatId).get();
+                            if (context.getShelterType().equals(
+                                    ShelterType.CAT) && update.message() != null && contact != null) {
+                                CatOwners catOwner = context.getCatOwner();
+                                catOwner.setPhone(contact.phoneNumber());
+                                catOwner.setName(contact.firstName());
+                                catOwnersService.update(catOwner);
+                            } else if (context.getShelterType().equals(
+                                    ShelterType.DOG) && update.message() != null && contact != null) {
+                                DogOwner dogOwner = context.getDogOwner();
+                                dogOwner.setPhone(contact.phoneNumber());
+                                dogOwner.setName(contact.firstName());
+                                dogOwnerService.save(dogOwner);
+                            }
+                            sendForwardMessage(chatId, messageId);
+                            sendResponseMessage(chatId, "Мы получили ваши контактные данные");
 
+                        }
                     }
                     default -> sendResponseMessage(chatId, "Неизвестная команда!");
                 }
