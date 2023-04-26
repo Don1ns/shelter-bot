@@ -47,5 +47,4 @@ public class CatOwnersService {
 
         return this.repository.findByChatId(chatId);
     }
-    //Дописать комменты к методам
 }
