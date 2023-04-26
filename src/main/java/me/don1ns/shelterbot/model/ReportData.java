@@ -18,7 +18,7 @@ public class ReportData {
     private String ration;
     private String health;
     private String behaviour;
-    private String filePath; // TODO нужен для получения пути файла с базы
+    private String filePath;
     @Lob
-    private byte[] data; //TODO загружаемый фаил
+    private byte[] data;
 }

@@ -44,5 +44,4 @@ public class CatOwnersController {
         }
         return this.service.getAll();
     }
-    //Дописать комменты к методам
 }
