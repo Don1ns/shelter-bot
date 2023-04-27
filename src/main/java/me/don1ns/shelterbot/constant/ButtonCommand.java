@@ -18,7 +18,9 @@ public enum ButtonCommand {
     SHELTER_ADDRESS_SCHEDULE("Адрес и график работы приюта"),
     RECOMMENDATIONS_LIST("Список рекомендаций и советов"),
     DOCUMENTS_LIST("Список необходимых документов"),
-    SEND_CONTACT("Отправить контактные данные");
+    SEND_CONTACT("Отправить контактные данные"),
+    SEND_REPORT("Прислать отчет о питомце"),
+    NOTHING("");
 
 
     private final String command;
