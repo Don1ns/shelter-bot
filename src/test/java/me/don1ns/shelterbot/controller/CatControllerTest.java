@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Класс тестов контролера для котиков
  *
  * @author Герасименко Максим
- **/
+ */
 @WebMvcTest(CatController.class)
 public class CatControllerTest {
     @Autowired

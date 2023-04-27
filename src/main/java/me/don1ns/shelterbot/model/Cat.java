@@ -17,12 +17,28 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cat {
+
+    /**
+     * Поле идентификатор
+     */
     @Id
     @GeneratedValue
     private Long id;
+    /**
+     * Поле "имя кота"
+     */
     private String name;
+    /**
+     * Поле "порода кота"
+     */
     private String breed;
+    /**
+     * Поле "год рождения кота"
+     */
     private int yearOfBirth;
+    /**
+     * Поле "описание кота" или доп. информация о питомце
+     */
     private String description;
 
 

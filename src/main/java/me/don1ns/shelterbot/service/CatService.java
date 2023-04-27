@@ -19,6 +19,7 @@ public class CatService {
 
     /**
      Добавление нового кота в список
+     @param cat (объект кот)
       */
     public Cat addCat(Cat cat) {
         return this.repository.save(cat);
@@ -33,6 +34,7 @@ public class CatService {
     }
     /**
      * Обновление кота
+     * @param cat (объект кот)
      */
 
     public Cat update(Cat cat) {

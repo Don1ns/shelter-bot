@@ -58,7 +58,7 @@ public class CatServiceTest {
     @Test
     public void testUpdateCat() {
 
- //       Mockito.when(repository.getById(1L)).thenReturn(testCat1);
+        Mockito.when(repository.getById(1L)).thenReturn(testCat1);
         Cat updatedCat1 = service.update(testCat1);
         Cat updatedCat2 = service.update(testCat2);
         Cat updatedCat3 = service.update(testCat3);
