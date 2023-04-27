@@ -1,6 +1,8 @@
 package me.don1ns.shelterbot.controller;
 
 import me.don1ns.shelterbot.model.Cat;
+import me.don1ns.shelterbot.model.CatOwners;
+import me.don1ns.shelterbot.service.CatOwnersService;
 import me.don1ns.shelterbot.service.CatService;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -23,16 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  **/
 @WebMvcTest(CatController.class)
 public class CatControllerTest {
-
-//    Cat testCat1 = new Cat(1l, "CatTest1", "CatBreedTest1", 2015, "descriptionTest1");
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private CatService service;
-
-
     @Test
-    void getById() throws Exception {
+    void getCatByIdTest() throws Exception {
         Cat cat = new Cat();
         cat.setId(1L);
         when(service.getById(anyLong())).thenReturn(cat);
@@ -42,18 +42,14 @@ public class CatControllerTest {
                 .andExpect(jsonPath("$.id").value(1));
         verify(service).getById(1L);
     }
-
     @Test
-    void save() throws Exception {
+    void addCatTest() throws Exception {
         Cat cat = new Cat();
         cat.setId(1L);
-        cat.setName("testCat");
+        cat.setName("CatTest1");
         JSONObject userObject = new JSONObject();
         userObject.put("id", 1L);
-        userObject.put("name", "testCat");
-        userObject.put("breed", "testBreed");
-        userObject.put("yearOfBirth", 2015);
-        userObject.put("description", "test");
+        userObject.put("name", "CatTest1");
         when(service.addCat(cat)).thenReturn(cat);
         mockMvc.perform(
                         post("/cat")
@@ -63,15 +59,14 @@ public class CatControllerTest {
                 .andExpect(content().json(userObject.toString()));
         verify(service).addCat(cat);
     }
-
     @Test
-    void update() throws Exception {
+    void updateCatByIdTest() throws Exception {
         Cat cat = new Cat();
         cat.setId(1L);
-        cat.setName("testCat");
+        cat.setName("CatTest1");
         JSONObject userObject = new JSONObject();
         userObject.put("id", 1L);
-        userObject.put("name", "testCat");
+        userObject.put("name", "CatTest1");
         when(service.update(cat)).thenReturn(cat);
         mockMvc.perform(
                         put("/cat")
@@ -81,13 +76,11 @@ public class CatControllerTest {
                 .andExpect(content().json(userObject.toString()));
         verify(service).update(cat);
     }
-
     @Test
-    void remove() throws Exception {
+    void removeCatTest() throws Exception {
         mockMvc.perform(
-                        delete("cat/{id}", 1))
+                        delete("/cat/{id}", 1))
                 .andExpect(status().isOk());
         verify(service).removeById(1L);
     }
-
 }

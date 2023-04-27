@@ -47,4 +47,6 @@ public class CatService {
     public void removeById(Long id) {
         this.repository.deleteById(id);
     }
+
+
 }
