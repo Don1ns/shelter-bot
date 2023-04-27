@@ -8,26 +8,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-/*
-Класс котиков
-@автор Максим Герасименко
-*/
+/**
+ * Класс модель котов
+ * @author Герасименко Максим
+ */
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cat {
-    // ID кота
     @Id
     @GeneratedValue
     private Long id;
-    // Имя кота
     private String name;
-    // Порода кота
     private String breed;
-    // Год рождения кота
     private int yearOfBirth;
-    // Описание кота
     private String description;
 
 

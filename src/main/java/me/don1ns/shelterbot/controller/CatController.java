@@ -5,9 +5,9 @@ import me.don1ns.shelterbot.model.Cat;
 import me.don1ns.shelterbot.service.CatService;
 import org.springframework.web.bind.annotation.*;
 
-/*
-Класс Контролер для котиков
-@автор Герасименко Максим
+/**
+ * Класс контроллер для котов
+ * @author Герасименко Максим
  */
 @RestController
 @RequestMapping("cat")

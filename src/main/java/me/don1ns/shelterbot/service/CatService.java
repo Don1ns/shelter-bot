@@ -5,9 +5,9 @@ import me.don1ns.shelterbot.model.Cat;
 import me.don1ns.shelterbot.repository.CatRepository;
 import org.springframework.stereotype.Service;
 
-/*
- * CRUD операции для котов
- * @автор Герасименко Максим
+/**
+ * Класс сервис для котов (CRUD операции)
+ * @author Герасименко Максим
  */
 @Service
 public class CatService {
@@ -17,21 +17,22 @@ public class CatService {
         this.repository = repository;
     }
 
-    /*
+    /**
      Добавление нового кота в список
       */
     public Cat addCat(Cat cat) {
         return this.repository.save(cat);
     }
 
-    /*
+    /**
     получение кота по ID
+     @param id кота
     */
     public Cat getById(Long id) {
         return this.repository.findById(id).orElseThrow(CatNotFoundException::new);
     }
-    /*
-     * Обновление кота по ID
+    /**
+     * Обновление кота
      */
 
     public Cat update(Cat cat) {
@@ -40,8 +41,9 @@ public class CatService {
             }
         throw new CatNotFoundException();
     }
-    /*
+    /**
      * Удаление кота из списка по ID
+     * @param id кота
      */
 
     public void removeById(Long id) {
