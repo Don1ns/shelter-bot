@@ -56,8 +56,8 @@ public class ContextServiceTest {
     }
     @Test
     public void testGetAll() {
-        List<Context> contextList =  new ArrayList<>();
-       Context context22 = new Context(1L, ShelterType.DOG);
+        List<Context> contextList = new ArrayList<>();
+        Context context22 = new Context(1L, ShelterType.DOG);
         contextList.add(context22);
         Context context23 = new Context(2L, ShelterType.CAT);
         contextList.add(context23);
@@ -66,7 +66,7 @@ public class ContextServiceTest {
         Collection<Context> result = service.getAll();
         Assertions.assertEquals(contextList, result);
         Mockito.verify(repository, Mockito.times(1)).findAll();
-
+    }
     // Не уверена в том, что данные тесты вообще нужны. Проверка ради проверки.
    /*
 
