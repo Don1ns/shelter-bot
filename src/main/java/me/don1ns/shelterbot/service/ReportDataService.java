@@ -6,7 +6,12 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+/**
+ * Класс сервис отчетов
+ * @author Королёв Артем
+ **/
 @Service
 @Transactional
 public class ReportDataService {
@@ -16,7 +21,7 @@ public class ReportDataService {
     }
     public void uploadReportData(Long chatId,String name, byte[] pictureFile,
                                  String ration, String health, String behaviour,
-                                 String filePath) throws IOException {
+                                 String filePath, Date lastMessage) throws IOException {
         ReportData report = new ReportData();
         report.setChatId(chatId);
         report.setName(name);
@@ -25,6 +30,7 @@ public class ReportDataService {
         report.setHealth(health);
         report.setBehaviour(behaviour);
         report.setFilePath(filePath);
+        report.setLastMessage(lastMessage);
         this.repository.save(report);
     }
     public ReportData findById(Long id) {
