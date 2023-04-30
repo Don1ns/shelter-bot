@@ -1,11 +1,13 @@
 package me.don1ns.shelterbot.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.model.DogOwner;
 import me.don1ns.shelterbot.service.DogOwnerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -30,6 +32,16 @@ public class DogOwnerController {
     @GetMapping("/{chatId}")
     public Set<DogOwner> getByChatId(@PathVariable Long chatId) {
         return dogOwnerService.getByChatId(chatId);
+    }
+
+    @Operation(summary = "Просмотр всех пользователей",
+            description = "Просмотр всех пользователей, либо определенного пользователя по chat_id")
+    @GetMapping("/all")
+    public Collection<DogOwner> getAll(@RequestParam(required = false) Long chatId) {
+        if (chatId != null) {
+            return dogOwnerService.getByChatId(chatId);
+        }
+        return dogOwnerService.getAll();
     }
     @Operation(summary = "Создание пользователя")
     @PostMapping()

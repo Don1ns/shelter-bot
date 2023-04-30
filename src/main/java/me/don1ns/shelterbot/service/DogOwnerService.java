@@ -1,10 +1,12 @@
 package me.don1ns.shelterbot.service;
 
 import me.don1ns.shelterbot.exception.DogOwnerNotFoundException;
+import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.model.DogOwner;
 import me.don1ns.shelterbot.repository.DogOwnerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -26,6 +28,9 @@ public class DogOwnerService {
 
     public DogOwner getById(Long id) {
         return repository.findById(id).orElseThrow(DogOwnerNotFoundException::new);
+    }
+    public Collection<DogOwner> getAll() {
+        return repository.findAll();
     }
     public void delete(Long id) {
         repository.deleteById(id);

@@ -14,6 +14,7 @@ import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.model.Context;
 import me.don1ns.shelterbot.model.DogOwner;
 import me.don1ns.shelterbot.constant.ButtonCommand;
+import me.don1ns.shelterbot.model.ReportData;
 import me.don1ns.shelterbot.service.CatOwnersService;
 import me.don1ns.shelterbot.service.ContextService;
 import me.don1ns.shelterbot.service.DogOwnerService;
@@ -21,14 +22,13 @@ import me.don1ns.shelterbot.service.ReportDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,10 +102,6 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                 String text = message.text();
                 int messageId = message.messageId();
                 Contact contact = update.message().contact();
-                Calendar calendar = new GregorianCalendar();
-                long daysOfReports = reportDataService.getAll().stream()
-                        .filter(s -> s.getChatId() == chatId)
-                        .count();
 
                 if (text != null && update.message().photo() == null && contact == null) {
                     switch (parse(text)) {
@@ -265,25 +261,46 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                     sendResponseMessage(chatId, "Мы получили ваши контактные данные");
 
                 } else if (update.message().photo() != null && update.message().caption() != null) {
-                    if(daysOfReports < 30) {
-                        Context context = contextService.getByChatId(chatId).get();
-                        if (context.getShelterType().equals(ShelterType.CAT)
-                                && context.getCatOwner().getCat() != null) {
-                            String petName = context.getCatOwner().getCat().getName();
-                            getReport(message, petName);
-                            daysOfReports++;
-                        } else if (context.getShelterType().equals(ShelterType.DOG)
-                                && context.getDogOwner().getDog() != null) {
-                            String petName = context.getDogOwner().getName();
-                            getReport(message, petName);
-                            daysOfReports++;
-                        } else {
-                            sendResponseMessage(chatId, "У вас нет животного!");
+                    Calendar calendar = new GregorianCalendar();
+                    long compareTime = calendar.get(Calendar.DAY_OF_MONTH);
+                    long daysOfReports = reportDataService.getAll().stream()
+                            .filter(s -> s.getChatId() == chatId)
+                            .count();
+                    Date lastMessageDate = reportDataService.getAll().stream()
+                            .filter(s -> s.getChatId() == chatId)
+                            .map(ReportData::getLastMessage)
+                            .max(Date::compareTo)
+                            .orElse(null);
+                    if (lastMessageDate != null) {
+                        long numberOfDay = lastMessageDate.getDate();
+                        if (daysOfReports < 30) {
+                            if (compareTime != numberOfDay) {
+                                Context context = contextService.getByChatId(chatId).get();
+                                if (context.getShelterType().equals(ShelterType.CAT)
+                                        && context.getCatOwner().getCat() != null) {
+                                    String petName = context.getCatOwner().getCat().getName();
+                                    getReport(message, petName);
+                                    daysOfReports++;
+                                } else if (context.getShelterType().equals(ShelterType.DOG)
+                                        && context.getDogOwner().getDog() != null) {
+                                    String petName = context.getDogOwner().getName();
+                                    getReport(message, petName);
+                                    daysOfReports++;
+                                } else {
+                                    sendResponseMessage(chatId, "У вас нет животного!");
+                                }
+                            } else {
+                                sendResponseMessage(chatId, "Вы уже отправляли сегодня отчет");
+                            }
+
+                        }
+                        if (daysOfReports == 30) {
+                            sendResponseMessage(chatId, "Вы прошли испытательный срок!");
+                            sendResponseMessage(volunteerChatId, "Владелец животного с chatId " + chatId
+                                    + " прошел испытательный срок!");
                         }
                     }
-                    if(daysOfReports == 30) {
-                        sendResponseMessage(chatId, "Вы прошли испытательный срок!");
-                    }
+
                 } else if (update.message().photo() != null && update.message().caption() == null) {
                     sendResponseMessage(chatId, "Отчет нужно присылать с описанием!");
                 }
@@ -347,13 +364,47 @@ public class TelegramBotUpdateListener implements UpdatesListener {
             file.fileSize();
             String pathPhoto = file.filePath();
             byte[] fileContent = telegramBot.getFileContent(file);
+
+            long date = message.date();
+            Date lastMessage = new Date(date * 1000);
             reportDataService.uploadReportData(
                     chatId, petName, fileContent, ration,
-                    health, behaviour, pathPhoto);
+                    health, behaviour, pathPhoto, lastMessage);
             sendForwardMessage(chatId, message.messageId());
             sendResponseMessage(chatId, "Ваш отчет принят!");
         } catch (IOException e) {
             System.out.println("Ошибка загрузки фото!");
+        }
+
+    }
+
+    /**
+     * Метод отслеживания своеврменной отправки отчетов
+     */
+    @Scheduled(cron = "@daily")
+    public void sendWarning() {
+        for (Context context : contextService.getAll()) {
+            long chatId = context.getChatId();
+            long daysOfReports = reportDataService.getAll().stream()
+                    .filter(s -> Objects.equals(s.getChatId(), chatId))
+                    .count();
+            if (daysOfReports < 30 && daysOfReports != 0) {
+                long twoDay = 172800000;
+                Date nowTime = new Date(new Date().getTime() - twoDay);
+                Date lastMessageDate = reportDataService.getAll().stream()
+                        .filter(s -> Objects.equals(s.getChatId(), chatId))
+                        .map(ReportData::getLastMessage)
+                        .max(Date::compareTo)
+                        .orElse(null);
+                if (lastMessageDate != null) {
+                    if (lastMessageDate.before(nowTime)) {
+                        sendResponseMessage(chatId, "Вы не отправляли отчёты уже более двух дней. " +
+                                "Пожалуйста, отправьте отчёт или выйдите на связь с волонтёрами.");
+                        sendResponseMessage(volunteerChatId, "Владелец животного с chatId " + chatId
+                                + " не отправлял отчёты уже более двух дней!");
+                    }
+                }
+            }
         }
 
     }

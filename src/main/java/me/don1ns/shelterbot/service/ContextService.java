@@ -5,6 +5,7 @@ import me.don1ns.shelterbot.model.Context;
 import me.don1ns.shelterbot.repository.ContextRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -21,6 +22,9 @@ public class ContextService {
     }
     public Context saveContext(Context context) {
         return contextRepository.save(context);
+    }
+    public Collection<Context> getAll() {
+        return contextRepository.findAll();
     }
 
     public Optional<Context> getByChatId(Long chatId) {
