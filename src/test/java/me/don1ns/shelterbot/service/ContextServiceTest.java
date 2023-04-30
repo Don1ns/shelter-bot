@@ -62,33 +62,10 @@ public class ContextServiceTest {
         Context context23 = new Context(2L, ShelterType.CAT);
         contextList.add(context23);
         Mockito.when(repository.findAll()).thenReturn(contextList);
-        ContextService service = new ContextService(repository);
         Collection<Context> result = service.getAll();
         Assertions.assertEquals(contextList, result);
         Mockito.verify(repository, Mockito.times(1)).findAll();
     }
-    // Не уверена в том, что данные тесты вообще нужны. Проверка ради проверки.
-   /*
-
-   @Test
-    public void whenCreatesEmptyOptional_thenCorrect() {
-        Optional<Context> empty = Optional.empty();
-        assertFalse(empty.isPresent());
-    }
-    @Test
-    public void givenNonNull_whenCreatesNonNullable_thenCorrect() {
-        Context context = new Context(1L,ShelterType.DOG);
-        Optional<Context> opt = Optional.of(context);
-        assertTrue(opt.isPresent());
-    }
-    @Test
-    public void givenOptional_whenIsPresentWorks_thenCorrect() {
-        Optional<Context> context = Optional.of(new Context(1L,ShelterType.DOG));
-        assertTrue(context.isPresent());
-
-        context = Optional.ofNullable(null);
-        assertFalse(context.isPresent());
-    }*/
 }
 
 
