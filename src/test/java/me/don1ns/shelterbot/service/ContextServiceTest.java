@@ -1,6 +1,7 @@
 package me.don1ns.shelterbot.service;
 
 import me.don1ns.shelterbot.constant.ShelterType;
+import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.model.Context;
 import me.don1ns.shelterbot.repository.ContextRepository;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +12,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -50,6 +54,18 @@ public class ContextServiceTest {
         assertNotNull(context);
         Assertions.assertEquals(context.get(), context.get());
     }
+    @Test
+    public void testGetAll() {
+        List<Context> contextList =  new ArrayList<>();
+       Context context22 = new Context(1L, ShelterType.DOG);
+        contextList.add(context22);
+        Context context23 = new Context(2L, ShelterType.CAT);
+        contextList.add(context23);
+        Mockito.when(repository.findAll()).thenReturn(contextList);
+        ContextService service = new ContextService(repository);
+        Collection<Context> result = service.getAll();
+        Assertions.assertEquals(contextList, result);
+        Mockito.verify(repository, Mockito.times(1)).findAll();
 
     // Не уверена в том, что данные тесты вообще нужны. Проверка ради проверки.
    /*
