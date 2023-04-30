@@ -56,7 +56,7 @@ class DogOwnerServiceTest {
     }
 
     @Test
-    public void testUpdateCatOwners() {
+    public void testUpdateDogOwners() {
         DogOwner dogOwner1 = new DogOwner();
         dogOwner1.setName("Vasya");
         dogOwner1.setId(1L);
