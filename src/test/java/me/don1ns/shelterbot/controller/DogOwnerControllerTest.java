@@ -1,11 +1,7 @@
 package me.don1ns.shelterbot.controller;
 
-import liquibase.pro.packaged.D;
-import me.don1ns.shelterbot.model.CatOwners;
 import me.don1ns.shelterbot.model.DogOwner;
-import me.don1ns.shelterbot.service.CatOwnersService;
 import me.don1ns.shelterbot.service.DogOwnerService;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

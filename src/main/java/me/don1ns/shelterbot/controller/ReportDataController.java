@@ -16,7 +16,7 @@ public class ReportDataController {
     public ReportDataController(ReportDataService reportDataService) {
         this.reportDataService = reportDataService;
     }
-    @GetMapping("/{id}/report")
+    @GetMapping("/{id}")
     public ReportData downloadReport(@Parameter(description = "report id") @PathVariable Long id) {
         return this.reportDataService.findById(id);
     }
