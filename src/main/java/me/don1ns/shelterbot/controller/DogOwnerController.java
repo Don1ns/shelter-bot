@@ -14,24 +14,18 @@ import java.util.Set;
 * Класс Контролер для владельцев собак
  */
 @RestController
-@RequestMapping("/DogOwner")
+@RequestMapping("dog-owners")
 public class DogOwnerController {
-    private final DogOwnerService dogOwnerService;
+    private final DogOwnerService service;
 
-    public DogOwnerController(DogOwnerService dogOwnerService) {
-        this.dogOwnerService = dogOwnerService;
+    public DogOwnerController(DogOwnerService service) {
+        this.service = service;
     }
 
     @Operation(summary = "Получение пользователя по id")
     @GetMapping("/{id}")
     public DogOwner getById(@PathVariable Long id) {
-        return dogOwnerService.getById(id);
-    }
-
-    @Operation(summary = "Получение пользователя по chat id")
-    @GetMapping("/{chatId}")
-    public Set<DogOwner> getByChatId(@PathVariable Long chatId) {
-        return dogOwnerService.getByChatId(chatId);
+        return this.service.getById(id);
     }
 
     @Operation(summary = "Просмотр всех пользователей",
@@ -39,26 +33,24 @@ public class DogOwnerController {
     @GetMapping("/all")
     public Collection<DogOwner> getAll(@RequestParam(required = false) Long chatId) {
         if (chatId != null) {
-            return dogOwnerService.getByChatId(chatId);
+            return service.getByChatId(chatId);
         }
-        return dogOwnerService.getAll();
+        return service.getAll();
     }
     @Operation(summary = "Создание пользователя")
     @PostMapping()
-    public ResponseEntity<Void> save(@RequestBody DogOwner dogOwner) {
-        dogOwnerService.save(dogOwner);
-        return ResponseEntity.ok().build();
+    public DogOwner save(@RequestBody DogOwner dogOwner) {
+        return this.service.save(dogOwner);
     }
     @Operation(summary = "Изменение данных пользователя")
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody DogOwner dogOwner) {
-        dogOwnerService.save(dogOwner);
-        return ResponseEntity.ok().build();
+    public DogOwner update(@RequestBody DogOwner dogOwner) {
+        return this.service.save(dogOwner);
     }
     @Operation(summary = "Удаление пользователей по id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable Long id) {
-        dogOwnerService.delete(id);
+        service.delete(id);
         return ResponseEntity.ok().build();
     }
 }
