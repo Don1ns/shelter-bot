@@ -118,7 +118,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                         case CAT -> {
                             if (contextService.getByChatId(chatId).isPresent()) {
                                 Context context = contextService.getByChatId(chatId).get();
-                                if (catOwnersService.getByChatId(chatId).isEmpty()) {
+                                if (context.getCatOwner() == null) {
                                     CatOwners catOwner = new CatOwners();
                                     catOwner.setChatId(chatId);
                                     catOwnersService.create(catOwner);
@@ -134,7 +134,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                         case DOG -> {
                             if (contextService.getByChatId(chatId).isPresent()) {
                                 Context context = contextService.getByChatId(chatId).get();
-                                if (dogOwnerService.getByChatId(chatId).isEmpty()) {
+                                if (context.getDogOwner() == null) {
                                     DogOwner dogOwner = new DogOwner();
                                     dogOwner.setChatId(chatId);
                                     dogOwnerService.save(dogOwner);
@@ -151,6 +151,9 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                         }
                         case SHELTER_INFO_MENU -> {
                             keyBoard.shelterInfoMenu(chatId);
+                        }
+                        case HOW_ADOPT_PET_INFO -> {
+                            keyBoard.shelterInfoHowAdoptPetMenu(chatId);
                         }
                         case SHELTER_INFO -> {
                             if (contextService.getByChatId(chatId).isPresent()) {
@@ -180,20 +183,11 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                                             """);
                                 } else if (context.getShelterType().equals(ShelterType.DOG)) {
                                     sendResponseMessage(chatId, """
-                                            Адрес кошачего приюта - ...
+                                            Адрес собачего приюта - ...
                                             График работы - ...
                                             """);
                                 }
                             }
-                        }
-                        case VOLUNTEER -> {
-                            sendResponseMessage(chatId, "Мы передали ваше сообщение волонтеру. " +
-                                    "Если у вас закрытый профиль отправьте контактные данные," +
-                                    "с помощью кнопки в меню - Отправить контактные данные");
-                            sendForwardMessage(chatId, messageId);
-                        }
-                        case HOW_ADOPT_PET_INFO -> {
-                            keyBoard.shelterInfoHowAdoptPetMenu(chatId);
                         }
                         case RECOMMENDATIONS_LIST -> {
                             if (contextService.getByChatId(chatId).isPresent()) {
@@ -227,13 +221,18 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                                 }
                             }
                         }
+                        case VOLUNTEER -> {
+                            sendResponseMessage(chatId, "Мы передали ваше сообщение волонтеру. " +
+                                    "Если у вас закрытый профиль отправьте контактные данные," +
+                                    "с помощью кнопки в меню - Отправить контактные данные");
+                            sendForwardMessage(chatId, messageId);
+                        }
                         case SEND_REPORT -> {
                             sendResponseMessage(chatId, """
                                     Для отчета необходима фотография, рацион,
                                     самочувствие и изменение в поведении питомца.
                                     Загрузите фото, а в подписи к нему, скопируйте и заполните текст ниже.
-                                    """);
-                            sendResponseMessage(chatId, """
+                                                                        
                                     Рацион: ваш текст;
                                     Самочувствие: ваш текст;
                                     Поведение: ваш текст;
@@ -241,7 +240,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                         }
                         default -> sendResponseMessage(chatId, "Неизвестная команда!");
                     }
-                } else if (update.message() != null && update.message().contact() != null && contextService
+                } else if (update.message().contact() != null && contextService
                         .getByChatId(chatId).isPresent()) {
                     Context context = contextService.getByChatId(chatId).get();
                     if (context.getShelterType().equals(
@@ -283,7 +282,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                                     daysOfReports++;
                                 } else if (context.getShelterType().equals(ShelterType.DOG)
                                         && context.getDogOwner().getDog() != null) {
-                                    String petName = context.getDogOwner().getName();
+                                    String petName = context.getDogOwner().getDog().getName();
                                     getReport(message, petName);
                                     daysOfReports++;
                                 } else {
@@ -350,32 +349,49 @@ public class TelegramBotUpdateListener implements UpdatesListener {
         String caption = message.caption();
         Long chatId = message.chat().id();
 
-        Pattern pattern = Pattern.compile(REGEX_MESSAGE);
-        Matcher matcher = pattern.matcher(caption);
-        String ration = matcher.group(3);
-        String health = matcher.group(7);
-        String behaviour = matcher.group(11);
+        List<String> captionMatcher = splitCaption(caption);
+
+        String ration = captionMatcher.get(0);
+        String health = captionMatcher.get(1);
+        String behaviour = captionMatcher.get(2);
 
         GetFile getFile = new GetFile(photo.fileId());
         GetFileResponse getFileResponse = telegramBot.execute(getFile);
 
         try {
             File file = getFileResponse.file();
-            file.fileSize();
-            String pathPhoto = file.filePath();
             byte[] fileContent = telegramBot.getFileContent(file);
 
             long date = message.date();
             Date lastMessage = new Date(date * 1000);
             reportDataService.uploadReportData(
                     chatId, petName, fileContent, ration,
-                    health, behaviour, pathPhoto, lastMessage);
+                    health, behaviour, lastMessage);
             sendForwardMessage(chatId, message.messageId());
             sendResponseMessage(chatId, "Ваш отчет принят!");
         } catch (IOException e) {
             System.out.println("Ошибка загрузки фото!");
         }
 
+    }
+
+    /**
+     * Метод для разбивки описания под фотографии для добавления полученного текста в отчет
+     *
+     * @param caption
+     * @return
+     */
+    private List<String> splitCaption(String caption) {
+        Pattern pattern = Pattern.compile(REGEX_MESSAGE);
+        if (caption == null || caption.isBlank()) {
+            throw new IllegalArgumentException("Описание под фотографией не должно быть пустым. Отправьте отчёт заново!");
+        }
+        Matcher matcher = pattern.matcher(caption);
+        if (matcher.find()) {
+            return new ArrayList<>(List.of(matcher.group(3), matcher.group(7), matcher.group(11)));
+        } else {
+            throw new IllegalArgumentException("Проверьте правильность введённых данных и отправьте отчёт ещё раз.");
+        }
     }
 
     /**

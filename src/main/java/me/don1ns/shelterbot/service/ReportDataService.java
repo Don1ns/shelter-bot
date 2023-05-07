@@ -21,7 +21,7 @@ public class ReportDataService {
     }
     public void uploadReportData(Long chatId,String name, byte[] pictureFile,
                                  String ration, String health, String behaviour,
-                                 String filePath, Date lastMessage) throws IOException {
+                                 Date lastMessage) throws IOException {
         ReportData report = new ReportData();
         report.setChatId(chatId);
         report.setName(name);
@@ -29,7 +29,6 @@ public class ReportDataService {
         report.setRation(ration);
         report.setHealth(health);
         report.setBehaviour(behaviour);
-        report.setFilePath(filePath);
         report.setLastMessage(lastMessage);
         this.repository.save(report);
     }

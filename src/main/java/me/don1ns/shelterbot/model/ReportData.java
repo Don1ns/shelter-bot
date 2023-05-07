@@ -23,8 +23,17 @@ public class ReportData {
     private String ration;
     private String health;
     private String behaviour;
-    private String filePath;
     private Date lastMessage;
     @Lob
     private byte[] data;
+
+    public ReportData(Long chatId, String name, String ration, String health, String behaviour, Date lastMessage, byte[] data) {
+        this.chatId = chatId;
+        this.name = name;
+        this.ration = ration;
+        this.health = health;
+        this.behaviour = behaviour;
+        this.lastMessage = lastMessage;
+        this.data = data;
+    }
 }
