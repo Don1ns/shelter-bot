@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 public class CatOwners {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //id пользователя
     private Long id;
     //name пользователя

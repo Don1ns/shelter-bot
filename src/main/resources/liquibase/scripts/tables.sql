@@ -46,8 +46,8 @@ CREATE TABLE dog_owner
 
 CREATE TABLE contexts
 (
-    chat_id BIGSERIAL PRIMARY KEY,
-    shelter    VARCHAR,
-    cat_owner_id   BIGINT REFERENCES cat_owner (id),
-    dog_owner_id   BIGINT REFERENCES dog_owner (id)
+    chat_id      BIGSERIAL PRIMARY KEY,
+    shelter      INTEGER,
+    cat_owner_id BIGINT REFERENCES cat_owner (id),
+    dog_owner_id BIGINT REFERENCES dog_owner (id)
 );
