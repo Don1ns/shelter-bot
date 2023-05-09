@@ -271,34 +271,37 @@ public class TelegramBotUpdateListener implements UpdatesListener {
                             .map(ReportData::getLastMessage)
                             .max(Date::compareTo)
                             .orElse(null);
+                    long numberOfDay = 0L;
                     if (lastMessageDate != null) {
-                        long numberOfDay = lastMessageDate.getDate();
-                        if (daysOfReports < 30) {
-                            if (compareTime != numberOfDay) {
-                                Context context = contextService.getByChatId(chatId).get();
-                                if (context.getShelterType().equals(ShelterType.CAT)
-                                        && context.getCatOwner().getCat() != null) {
-                                    String petName = context.getCatOwner().getCat().getName();
-                                    getReport(message, petName);
-                                    daysOfReports++;
-                                } else if (context.getShelterType().equals(ShelterType.DOG)
-                                        && context.getDogOwner().getDog() != null) {
-                                    String petName = context.getDogOwner().getDog().getName();
-                                    getReport(message, petName);
-                                    daysOfReports++;
-                                } else {
-                                    sendResponseMessage(chatId, "У вас нет животного!");
-                                }
+                        numberOfDay = lastMessageDate.getDate();
+                    } else {
+                        numberOfDay = message.date();
+                    }
+                    if (daysOfReports < 30) {
+                        if (compareTime != numberOfDay) {
+                            Context context = contextService.getByChatId(chatId).get();
+                            if (context.getShelterType().equals(ShelterType.CAT)
+                                    && context.getCatOwner().getCat() != null) {
+                                String petName = context.getCatOwner().getCat().getName();
+                                getReport(message, petName);
+                                daysOfReports++;
+                            } else if (context.getShelterType().equals(ShelterType.DOG)
+                                    && context.getDogOwner().getDog() != null) {
+                                String petName = context.getDogOwner().getDog().getName();
+                                getReport(message, petName);
+                                daysOfReports++;
                             } else {
-                                sendResponseMessage(chatId, "Вы уже отправляли сегодня отчет");
+                                sendResponseMessage(chatId, "У вас нет животного!");
                             }
+                        } else {
+                            sendResponseMessage(chatId, "Вы уже отправляли сегодня отчет");
+                        }
 
-                        }
-                        if (daysOfReports == 30) {
-                            sendResponseMessage(chatId, "Вы прошли испытательный срок!");
-                            sendResponseMessage(volunteerChatId, "Владелец животного с chatId " + chatId
-                                    + " прошел испытательный срок!");
-                        }
+                    }
+                    if (daysOfReports == 30) {
+                        sendResponseMessage(chatId, "Вы прошли испытательный срок!");
+                        sendResponseMessage(volunteerChatId, "Владелец животного с chatId " + chatId
+                                + " прошел испытательный срок!");
                     }
 
                 } else if (update.message().photo() != null && update.message().caption() == null) {
