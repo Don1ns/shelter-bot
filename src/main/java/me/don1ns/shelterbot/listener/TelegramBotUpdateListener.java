@@ -43,6 +43,7 @@ public class TelegramBotUpdateListener implements UpdatesListener {
     private static final String REGEX_MESSAGE = "(Рацион:)(\\s)(\\W+)(;)\n" +
             "(Самочувствие:)(\\s)(\\W+)(;)\n" +
             "(Поведение:)(\\s)(\\W+)(;)";
+    private final Pattern pattern = Pattern.compile(REGEX_MESSAGE);
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdateListener.class);
     private final TelegramBot telegramBot;
@@ -382,7 +383,6 @@ public class TelegramBotUpdateListener implements UpdatesListener {
      * @return
      */
     private List<String> splitCaption(String caption) {
-        Pattern pattern = Pattern.compile(REGEX_MESSAGE);
         if (caption == null || caption.isBlank()) {
             throw new IllegalArgumentException("Описание под фотографией не должно быть пустым. Отправьте отчёт заново!");
         }
