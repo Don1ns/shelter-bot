@@ -34,9 +34,17 @@
 
 Backend:
   - Java 17
+  - Maven
   - Spring Boot
-  -
+  - Spring Web
+  - Spring Data
+  - Spring JPA
+  - GIT
+  - REST
+  - Swagger
+  - Stream API
   
 SQL:
   - PostgresSQL
+  - Liquibase
 
